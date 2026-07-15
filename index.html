@@ -2,8 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1">
 <title>DROP — 14 Day First Access</title>
+<meta name="description" content="A 14-day drop calendar, live in your browser. No app to install — first access, creator features and daily looks, every day for 14 days.">
+<meta name="theme-color" content="#0B0B0C">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="14/DAY DROP">
+<meta name="format-detection" content="telephone=no">
 <style>
 
   @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
@@ -28,7 +35,7 @@
   }
 
   *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
-  html,body{margin:0; padding:0;}
+  html,body{margin:0; padding:0; width:100%; overflow-x:hidden;}
   body{
     background: var(--ink);
     color: var(--paper);
@@ -36,7 +43,9 @@
     min-height:100vh;
     display:flex;
     justify-content:center;
-    padding: 28px 12px 60px;
+    padding: 28px 12px calc(60px + env(safe-area-inset-bottom));
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
   }
   @media (prefers-reduced-motion: reduce){
     *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
@@ -63,6 +72,21 @@
     max-height: none;
   }
 
+  /* ---- small phones: tighten up ---- */
+  @media (max-width: 359px){
+    .screen{ padding: 26px 12px 18px; }
+    .cd-num{ font-size:16px; }
+    .wall{ grid-template-columns: repeat(3,1fr); }
+  }
+
+  /* ---- tablet: still single column, just breathes more ---- */
+  @media (min-width: 640px) and (max-width: 859px){
+    .device{ max-width:600px; border-radius:44px; }
+    .screen{ padding: 42px 30px 30px; }
+    .wall{ grid-template-columns: repeat(4,1fr); }
+    .principles{ grid-template-columns: repeat(4,1fr); }
+  }
+
   /* ---- wide viewport: shed the phone chrome, become a website ---- */
   @media (min-width: 860px){
     body{ padding: 0; align-items:flex-start; }
@@ -82,22 +106,24 @@
     }
     .site-grid{
       display:grid;
-      grid-template-columns: 380px 1fr;
+      grid-template-columns: minmax(300px,380px) 1fr;
       gap: 56px;
       padding: 56px 40px 70px;
       align-items:start;
     }
     .col-left{ position:sticky; top:56px; }
     .dial-wrap{ margin: 20px 0 0; }
-    .hero-title{ font-size:38px; }
     .wall{ grid-template-columns: repeat(4,1fr); }
-    .principles{ grid-template-columns: repeat(4,1fr); }
     .context-inner{ display:none; }
   }
   @media (min-width: 1240px){
     .screen{ max-width:1320px; }
-    .site-grid{ grid-template-columns: 420px 1fr; gap:80px; padding: 64px 48px 90px; }
-    .hero-title{ font-size:44px; }
+    .site-grid{ grid-template-columns: minmax(340px,420px) 1fr; gap:80px; padding: 64px 48px 90px; }
+  }
+  @media (min-width: 860px) and (max-width: 1023px){
+    .site-grid{ grid-template-columns: 1fr; gap:40px; padding: 40px 28px 60px; }
+    .col-left{ position:static; }
+    .dial-wrap{ margin: 4px auto 20px; }
   }
 
   /* ===== top bar ===== */
@@ -138,16 +164,17 @@
   }
   .hero-title{
     font-family:var(--font-display);
-    font-size:30px;
-    line-height:1.02;
+    font-size: clamp(26px, 6vw, 38px);
+    line-height:1.05;
     margin:0 0 14px;
     color:var(--paper);
   }
   .countdown-row{
-    display:flex; gap:8px; margin-bottom:22px;
+    display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px;
   }
   .cd-unit{
-    flex:1;
+    flex:1 1 70px;
+    min-width:70px;
     background: rgba(255,255,255,0.04);
     border:1px solid var(--line);
     border-radius: var(--radius-s);
@@ -155,7 +182,7 @@
     text-align:center;
   }
   .cd-num{
-    font-family:var(--font-mono); font-weight:700; font-size:22px; color:var(--paper);
+    font-family:var(--font-mono); font-weight:700; font-size: clamp(18px,4vw,22px); color:var(--paper);
     font-variant-numeric: tabular-nums;
   }
   .cd-label{
@@ -165,10 +192,12 @@
   /* ===== day dial ===== */
   .dial-wrap{
     position:relative;
-    width:270px; height:270px;
+    width: clamp(220px, 60vw, 270px);
+    aspect-ratio: 1/1;
+    max-width:270px;
     margin: 4px auto 20px;
   }
-  .dial-wrap svg{overflow:visible;}
+  .dial-wrap svg{ overflow:visible; width:100%; height:100%; display:block; }
   .day-node{
     cursor:pointer;
   }
@@ -277,7 +306,7 @@
 
   /* ===== creator wall ===== */
   .wall{
-    display:grid; grid-template-columns: repeat(3,1fr); gap:8px;
+    display:grid; grid-template-columns: repeat(auto-fill, minmax(84px,1fr)); gap:8px;
   }
   .wall-tile{
     aspect-ratio: 3/4;
@@ -312,7 +341,7 @@
   /* ===== principles footer ===== */
   .principles{
     margin-top:28px; padding-top:18px; border-top:1px solid var(--line);
-    display:grid; grid-template-columns: 1fr 1fr; gap:10px;
+    display:grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap:14px 10px;
   }
   .p-item{
     display:flex; gap:8px; align-items:flex-start;
